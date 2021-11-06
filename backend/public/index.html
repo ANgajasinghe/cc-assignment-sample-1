@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factorial Calculation UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+        integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <nav class="navbar p-3  navbar-light bg-light justify-content-between">
+
+            <div>
+                <a class="navbar-brand" href="#">IT18153682 - AN Gajasinghe</a>
+            </div>
+
+            
+            <div>
+                <div v-if="isBackend">
+                    <span class="badge bg-success">Backend Connected</span>
+                </div>
+                <div v-if="!isBackend">
+                    <span class="badge bg-danger">Backend Disconnected</span>
+                </div>
+            </div>
+                
+
+
+
+        </nav>
+
+        <div class="container mt-3">
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Factorial Calculation</h5>
+                            <p class="card-text">
+                                <input type="number" class="form-control" v-model="number" placeholder="Enter Number">
+                            </p>
+                            <button class="btn btn-primary" v-on:click="calculate">Calculate</button>
+                            <p class="card-text">
+                                <span v-if="result">
+                                    <h5>Result: {{result}}</h5>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>  
+
+                <div class="col-sm-12 mt-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-2">Previous Results</h5>
+                            <ol>
+                                <li v-for="d in data">
+
+                                    <div class="d-flex justify-content-between m-2">
+                                        <div>{{ d.input }} - {{ d.result }} </div>
+                                        <button class="btn btn-danger" v-on:click="deleteData(d.id)">Delete</button>
+                                    </div>
+                                    
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+</body>
+
+
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            factorial: '',
+            result: 0,
+            number: 0,
+            error: '',
+            loading: false,
+            isBackend: false,
+            data: [],
+        },
+        methods: {
+            init: async function () {
+                this.loading = true;
+                try {
+                    const result = await axios.get('http://localhost:8080/api/factorial');
+                    this.data = result.data;
+                    this.isBackend = true;
+                } catch (error) {
+                    alert('error occurred while connecting backend')
+                }
+                
+            },
+            calculate: async function () {
+                this.loading = true;
+                const result = await axios.post('http://localhost:8080/api/factorial/' + this.number);
+                this.data = result.data.allData;
+                this.result = result.data.result;
+                this.loading = false;
+            },
+            deleteData: async function (id) {
+                this.loading = true;
+                const result = await axios.delete('http://localhost:8080/api/factorial/' + id);
+                this.data = result.data;
+                this.loading = false;
+            }
+        }
+    });
+
+    app.init();
+</script>
+
+
+
+
+
+
+</html>
