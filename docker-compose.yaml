@@ -10,20 +10,24 @@ services:
     volumes:
       - mongData:/data/db
 
-
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
 
   frontend:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
+
+  proxy:
+    build:
+      context: ./nginx
     ports:
+      - "8080:80"
       - "3000:3000"
+    
+  
 
 # add your volumes here
 volumes:
