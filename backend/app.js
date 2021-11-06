@@ -75,7 +75,7 @@ app.delete("/api/factorial/:id", async (req, res) => {
 });
 
 mongoose.connect(
-    `mongodb://localhost:27017/factorials?ssl=false`,
+    `mongodb://mongodb:27017/factorials?ssl=false`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
