@@ -1,4 +1,4 @@
-### install docker desktop
+install docker desktop first
 
 
 * ` docker-compose up -d ` - Starts the docker containers
